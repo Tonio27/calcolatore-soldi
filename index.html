@@ -1,105 +1,193 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calcolatore Divisione Soldi</title>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Poker Winnings Splitter</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon.png">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0a5f0f;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+        h1 {
+            text-align: center;
+            color: #ffd700;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        input, button {
+            display: block;
+            width: 100%;
+            margin: 15px 0;
+            padding: 12px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+        }
+        input {
+            background-color: #fff;
+            color: #333;
+        }
+        button {
+            background-color: #ffd700;
+            color: #000;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        button:hover {
+            background-color: #ffed4a;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            font-size: 18px;
+            text-align: center;
+        }
+        .cards-container {
+            text-align: center;
+            margin-bottom: 20px;
+            height: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+        .card {
+            width: 80px;
+            height: 120px;
+            background-color: #fff;
+            border-radius: 5px;
+            display: inline-block;
+            position: absolute;
+            top: 0;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            font-size: 24px;
+            line-height: 120px;
+            color: #000;
+            font-weight: bold;
+        }
+        .card::before {
+            content: attr(data-suit);
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 20px;
+        }
+        .card::after {
+            content: attr(data-suit);
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 20px;
+            transform: rotate(180deg);
+        }
+        .card[data-suit="♥"], .card[data-suit="♦"] {
+            color: red;
+        }
+        .card:nth-child(1) { left: 10%; }
+        .card:nth-child(2) { left: 25%; }
+        .card:nth-child(3) { left: 40%; }
+        .card:nth-child(4) { left: 55%; }
+        .card:nth-child(5) { left: 70%; }
 
-    .container {
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      text-align: center;
-    }
-
-    h1 {
-      color: #333;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 10px;
-      color: #555;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      box-sizing: border-box;
-      margin-bottom: 20px;
-    }
-
-    button {
-      background-color: #4caf50;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    button:hover {
-      background-color: #45a049;
-    }
-
-    .result {
-      margin-top: 20px;
-      color: #333;
-    }
-
-    b {
-      display: block;
-      margin-bottom: 10px;
-    }
-  </style>
+        @keyframes dealCard {
+            from {
+                transform: translateY(-100px) rotate(180deg);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <div class="container">
-    <h1>Calcolatore Divisione Soldi</h1>
-
-    <label for="amount">Inserisci l'importo (superiore a 60 euro): </label>
-    <input type="number" id="amount" min="61" required>
-
-    <button onclick="calcolaDivisione()">Calcola</button>
-
-    <h2>Risultato:</h2>
-    <div class="result">
+    <div class="container">
+        <h1>Poker Winnings Splitter</h1>
+        <div class="cards-container">
+            <div class="card" data-suit="♠">A</div>
+            <div class="card" data-suit="♥">K</div>
+            <div class="card" data-suit="♦">Q</div>
+            <div class="card" data-suit="♣">J</div>
+            <div class="card" data-suit="♠">10</div>
+        </div>
+        <input type="number" id="totalWinnings" placeholder="Inserisci l'importo totale">
+        <button onclick="calculateSplit()">Calcola la Divisione</button>
+        <div id="result"></div>
     </div>
-  </div>
 
-  <script>
-    function calcolaDivisione() {
-      const importo = parseFloat(document.getElementById("amount").value);
+    <script>
+        const winningsData = [
+            { total: 60, first: 50, second: 10 },
+            { total: 65, first: 50, second: 15 },
+            { total: 70, first: 55, second: 15 },
+            { total: 75, first: 55, second: 20 },
+            { total: 80, first: 60, second: 20 },
+            { total: 85, first: 60, second: 25 },
+            { total: 90, first: 60, second: 30 },
+            { total: 95, first: 60, second: 30, third: 5 },
+            { total: 100, first: 60, second: 30, third: 10 },
+            { total: 105, first: 60, second: 35, third: 10 },
+            { total: 110, first: 65, second: 35, third: 10 },
+            { total: 115, first: 65, second: 35, third: 15 },
+            { total: 120, first: 65, second: 40, third: 15 },
+            { total: 125, first: 70, second: 40, third: 15 },
+            { total: 130, first: 70, second: 45, third: 15 },
+            { total: 135, first: 70, second: 45, third: 20 },
+        ];
 
-      if (importo > 60) {
-        const quota1 = importo * 0.55;
-        const quota2 = importo * 0.3;
-        const quota3 = importo * 0.15;
+        function calculateSplit() {
+            const total = parseInt(document.getElementById('totalWinnings').value);
+            const result = winningsData.find(w => w.total === total);
+            const resultDiv = document.getElementById('result');
 
-        document.querySelector(".result").innerHTML = `
-          <b>Quota 1: ${quota1.toFixed(2)} €</b>
-          <b>Quota 2: ${quota2.toFixed(2)} €</b>
-          <b>Quota 3: ${quota3.toFixed(2)} €</b>
-        `;
-      } else {
-        alert("L'importo deve essere superiore a 60 euro");
-      }
-    }
-  </script>
+            if (result) {
+                let resultText = `<strong>Primo:</strong> ${result.first}<br><strong>Secondo:</strong> ${result.second}`;
+                if (result.third) {
+                    resultText += `<br><strong>Terzo:</strong> ${result.third}`;
+                }
+                resultDiv.innerHTML = resultText;
+                animateCards();
+            } else {
+                resultDiv.innerHTML = 'Importo non trovato nella tabella.';
+            }
+        }
+
+        function animateCards() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.animation = 'none';
+                card.offsetHeight; // Trigger reflow
+                card.style.animation = `dealCard 0.5s ease-out ${index * 0.1}s`;
+            });
+        }
+
+        // Animate cards on page load
+        window.onload = animateCards;
+    </script>
 </body>
 </html>
