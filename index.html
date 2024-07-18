@@ -6,13 +6,26 @@
     <title>Poker Winnings Splitter</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="icon.png">
+    
+    <!-- Icone per iPhone -->
+    <link rel="apple-touch-icon" href="https://images5.alphacoders.com/968/96863.jpg">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://images5.alphacoders.com/968/96863.jpg">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://images5.alphacoders.com/968/96863.jpg">
+    <link rel="apple-touch-icon" sizes="167x167" href="https://images5.alphacoders.com/968/96863.jpg">
+
+    <!-- Icona per la schermata di avvio -->
+    <link rel="apple-touch-startup-image" href="https://images5.alphacoders.com/968/96863.jpg">
+
+    <!-- Metadati per l'app web -->
+    <meta name="apple-mobile-web-app-title" content="Poker Splitter">
+
     <style>
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #0a5f0f;
+            background: url('https://wallpapercave.com/wp/fJtVJW1.jpg') no-repeat center center fixed;
+            background-size: cover;
             color: #fff;
             min-height: 100vh;
             display: flex;
@@ -23,9 +36,9 @@
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.8);
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
             overflow: hidden;
         }
         h1 {
@@ -45,7 +58,7 @@
             border-radius: 5px;
         }
         input {
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.9);
             color: #333;
         }
         button {
@@ -53,6 +66,7 @@
             color: #000;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.1s;
+            font-weight: bold;
         }
         button:hover {
             background-color: #ffed4a;
@@ -60,68 +74,53 @@
         button:active {
             transform: scale(0.98);
         }
-        #result {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            font-size: 18px;
-            text-align: center;
-        }
         .cards-container {
-            text-align: center;
+            display: flex;
+            justify-content: space-around;
             margin-bottom: 20px;
-            height: 120px;
-            position: relative;
-            overflow: hidden;
         }
         .card {
-            width: 80px;
-            height: 120px;
+            width: 60px;
+            height: 90px;
             background-color: #fff;
             border-radius: 5px;
-            display: inline-block;
-            position: absolute;
-            top: 0;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
             font-size: 24px;
-            line-height: 120px;
-            color: #000;
             font-weight: bold;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
-        .card::before {
-            content: attr(data-suit);
-            position: absolute;
-            top: 5px;
-            left: 5px;
+        .card.red {
+            color: #c41e3a;
+        }
+        .card.black {
+            color: #000;
+        }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
+            text-align: center;
+            min-width: 300px;
+        }
+        .popup.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .popup h2 {
+            color: #ffd700;
+            margin-top: 0;
+        }
+        .popup p {
             font-size: 20px;
-        }
-        .card::after {
-            content: attr(data-suit);
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            font-size: 20px;
-            transform: rotate(180deg);
-        }
-        .card[data-suit="♥"], .card[data-suit="♦"] {
-            color: red;
-        }
-        .card:nth-child(1) { left: 10%; }
-        .card:nth-child(2) { left: 25%; }
-        .card:nth-child(3) { left: 40%; }
-        .card:nth-child(4) { left: 55%; }
-        .card:nth-child(5) { left: 70%; }
-
-        @keyframes dealCard {
-            from {
-                transform: translateY(-100px) rotate(180deg);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0) rotate(0deg);
-                opacity: 1;
-            }
+            margin: 10px 0;
         }
     </style>
 </head>
@@ -129,15 +128,19 @@
     <div class="container">
         <h1>Poker Winnings Splitter</h1>
         <div class="cards-container">
-            <div class="card" data-suit="♠">A</div>
-            <div class="card" data-suit="♥">K</div>
-            <div class="card" data-suit="♦">Q</div>
-            <div class="card" data-suit="♣">J</div>
-            <div class="card" data-suit="♠">10</div>
+            <div class="card black">A♠</div>
+            <div class="card red">K♥</div>
+            <div class="card red">Q♦</div>
+            <div class="card black">J♣</div>
+            <div class="card black">10♠</div>
         </div>
         <input type="number" id="totalWinnings" placeholder="Inserisci l'importo totale">
         <button onclick="calculateSplit()">Calcola la Divisione</button>
-        <div id="result"></div>
+    </div>
+
+    <div id="popup" class="popup">
+        <h2 id="popupTitle"></h2>
+        <div id="popupContent"></div>
     </div>
 
     <script>
@@ -163,31 +166,32 @@
         function calculateSplit() {
             const total = parseInt(document.getElementById('totalWinnings').value);
             const result = winningsData.find(w => w.total === total);
-            const resultDiv = document.getElementById('result');
 
             if (result) {
-                let resultText = `<strong>Primo:</strong> ${result.first}<br><strong>Secondo:</strong> ${result.second}`;
+                let content = `<p><strong>Primo:</strong> ${result.first}</p>
+                               <p><strong>Secondo:</strong> ${result.second}</p>`;
                 if (result.third) {
-                    resultText += `<br><strong>Terzo:</strong> ${result.third}`;
+                    content += `<p><strong>Terzo:</strong> ${result.third}</p>`;
                 }
-                resultDiv.innerHTML = resultText;
-                animateCards();
+                showPopup('Divisione Calcolata', content);
             } else {
-                resultDiv.innerHTML = 'Importo non trovato nella tabella.';
+                showPopup('Attenzione', '<p>Gabriele è ludopatico</p>');
             }
         }
 
-        function animateCards() {
-            const cards = document.querySelectorAll('.card');
-            cards.forEach((card, index) => {
-                card.style.animation = 'none';
-                card.offsetHeight; // Trigger reflow
-                card.style.animation = `dealCard 0.5s ease-out ${index * 0.1}s`;
-            });
+        function showPopup(title, content) {
+            const popup = document.getElementById('popup');
+            const popupTitle = document.getElementById('popupTitle');
+            const popupContent = document.getElementById('popupContent');
+            
+            popupTitle.textContent = title;
+            popupContent.innerHTML = content;
+            
+            popup.classList.add('show');
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 5000);
         }
-
-        // Animate cards on page load
-        window.onload = animateCards;
     </script>
 </body>
 </html>
