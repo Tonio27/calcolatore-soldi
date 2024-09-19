@@ -3,22 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Poker Divisione Vincita</title>
+    <title>Poker Winnings Splitter</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <!-- Icone per iPhone e altri dispositivi -->
-    <link rel="apple-touch-icon" href="icon.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="icon.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="icon.png">
-    <link rel="icon" type="image/png" href="icon.png">
+
+    <!-- Icone per iPhone -->
+    <link rel="apple-touch-icon" href="https://images5.alphacoders.com/968/96863.jpg">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://images5.alphacoders.com/968/96863.jpg">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://images5.alphacoders.com/968/96863.jpg">
+    <link rel="apple-touch-icon" sizes="167x167" href="https://images5.alphacoders.com/968/96863.jpg">
 
     <!-- Icona per la schermata di avvio -->
-    <link rel="apple-touch-startup-image" href="icon.png">
+    <link rel="apple-touch-startup-image" href="https://images5.alphacoders.com/968/96863.jpg">
 
-    <!-- Metadati per l'app web -->
-    <meta name="apple-mobile-web-app-title" content="Poker Splitter">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         body {
@@ -27,64 +33,40 @@
             padding: 0;
             background: url('https://wallpapercave.com/wp/fJtVJW1.jpg') no-repeat center center fixed;
             background-size: cover;
-            background-position: center;
             color: #fff;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
-        @media (max-width: 768px) {
-            body {
-                background-size: auto 100%;
-            }
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
+        .custom-container {
+            max-width: 800px;
+            width: 90%;
+            margin: 20px auto;
             padding: 20px;
             background-color: rgba(0, 0, 0, 0.8);
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-            overflow: hidden;
         }
-        h1 {
-            text-align: center;
+        h1, h2 {
             color: #ffd700;
-            font-size: 28px;
-            margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
-        input, button {
-            display: block;
-            width: 100%;
-            margin: 15px 0;
-            padding: 12px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-        }
-        input {
-            background-color: rgba(255, 255, 255, 0.9);
-            color: #333;
-        }
-        button {
+        .btn-custom {
             background-color: #ffd700;
             color: #000;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
             font-weight: bold;
+            transition: background-color 0.3s, transform 0.1s;
         }
-        button:hover {
+        .btn-custom:hover {
             background-color: #ffed4a;
         }
-        button:active {
+        .btn-custom:active {
             transform: scale(0.98);
         }
         .cards-container {
             display: flex;
             justify-content: space-around;
             margin-bottom: 20px;
+            animation: deal 0.5s ease-in-out;
+            flex-wrap: wrap;
         }
         .card {
             width: 60px;
@@ -97,6 +79,8 @@
             font-size: 24px;
             font-weight: bold;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            animation: flip 0.6s ease-in-out;
+            margin: 5px;
         }
         .card.red {
             color: #c41e3a;
@@ -117,6 +101,8 @@
             transition: transform 0.3s ease-in-out;
             text-align: center;
             min-width: 300px;
+            width: 90%;
+            max-width: 400px;
         }
         .popup.show {
             transform: translate(-50%, -50%) scale(1);
@@ -129,29 +115,139 @@
             font-size: 20px;
             margin: 10px 0;
         }
+        @keyframes deal {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes flip {
+            from { transform: rotateY(90deg); }
+            to { transform: rotateY(0); }
+        }
+        @media (max-width: 576px) {
+    .cards-container {
+        justify-content: center;
+    }
+    .card {
+        margin: 5px;
+        width: 50px; /* Dimensioni ridotte per schermi piccoli */
+        height: 70px;
+    }
+    .custom-container {
+        padding: 10px;
+    }
+    h1, h2 {
+        font-size: 1.5rem;
+    }
+    input, button {
+        font-size: 0.9rem;
+    }
+}
+
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .player-actions {
+            display: flex;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Poker Divisione Vincita</h1>
-        <div class="cards-container">
-            <div class="card black">A♠</div>
-            <div class="card red">K♥</div>
-            <div class="card red">Q♦</div>
-            <div class="card black">J♣</div>
-            <div class="card black">10♠</div>
+    <div class="custom-container">
+        <h1 class="text-center mb-4"><i class="bi bi-suit-spade-fill me-2"></i>Poker Winnings Splitter</h1>
+
+        <!-- Tab Menu -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="split-tab" data-bs-toggle="tab" data-bs-target="#split" type="button" role="tab">Dividi Vincite</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="players-tab" data-bs-toggle="tab" data-bs-target="#players" type="button" role="tab">Giocatori e Vincite</button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="myTabContent">
+            <!-- Divisione Vincite -->
+            <div class="tab-pane fade show active" id="split" role="tabpanel" aria-labelledby="split-tab">
+                <div class="cards-container mt-4">
+                    <div class="card black">A♠</div>
+                    <div class="card red">K♥</div>
+                    <div class="card red">Q♦</div>
+                    <div class="card black">J♣</div>
+                    <div class="card black">10♠</div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">€</span>
+                            <input type="number" id="totalWinnings" class="form-control" placeholder="Importo totale">
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <button onclick="calculateSplit()" class="btn btn-custom w-100">
+                            <i class="bi bi-calculator me-2"></i>Calcola la Divisione
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h2 class="mb-3">Cronologia Divisioni</h2>
+                        <ul id="historyList" class="list-group"></ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h2 class="mb-3">Grafico Divisione</h2>
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Giocatori e Vincite -->
+            <div class="tab-pane fade" id="players" role="tabpanel" aria-labelledby="players-tab">
+                <div class="mt-4">
+                    <h2>Aggiungi Giocatore</h2>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <input type="text" id="playerName" class="form-control" placeholder="Nome giocatore">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="number" id="playerWinnings" class="form-control" placeholder="Vincite giocatore">
+                        </div>
+                    </div>
+                    <button onclick="addPlayer()" class="btn btn-custom mb-4 w-100">Aggiungi</button>
+
+                    <h2 class="mb-3">Giocatori</h2>
+                    <ul id="playersList" class="list-group"></ul>
+
+                    <h2 class="mt-4">Grafico Vincite Giocatori</h2>
+                    <canvas id="lineChart"></canvas>
+
+                    <h2 class="mt-4">Andamento Vincite nel Tempo</h2>
+                    <canvas id="timeSeriesChart"></canvas>
+
+                    <div class="mt-4">
+                        <button onclick="exportData()" class="btn btn-custom me-2">Esporta Dati (JSON)</button>
+                        <button onclick="exportPDF()" class="btn btn-custom me-2">Esporta Dati (PDF)</button>
+                        <button onclick="importData()" class="btn btn-custom">Importa Dati</button>
+                        <input type="file" id="importFile" style="display: none;" accept=".json">
+                    </div>
+                </div>
+            </div>
         </div>
-        <input type="number" id="totalWinnings" placeholder="Inserisci l'importo totale">
-        <button onclick="calculateSplit()">Calcola la Divisione</button>
     </div>
 
-    <div id="popup" class="popup">
-        <h2 id="popupTitle"></h2>
-        <div id="popupContent"></div>
-    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        const winningsData = [
+        // Dati predefiniti per la divisione delle vincite
+        const splitRules = [
             { total: 60, first: 50, second: 10 },
             { total: 65, first: 50, second: 15 },
             { total: 70, first: 55, second: 15 },
@@ -170,34 +266,329 @@
             { total: 135, first: 70, second: 45, third: 20 },
         ];
 
+        let history = [];
+        let pieChart = null;
+        let players = [];
+        let lineChart = null;
+        let timeSeriesChart = null;
+
+        // Carica i dati dal localStorage all'avvio
+        window.onload = function() {
+            loadPlayersData();
+            updatePlayersList();
+            updateLineChart();
+            updateTimeSeriesChart();
+        };
+
+        function loadPlayersData() {
+            const savedPlayers = localStorage.getItem('pokerPlayers');
+            if (savedPlayers) {
+                players = JSON.parse(savedPlayers);
+            }
+        }
+
+        function savePlayers() {
+            localStorage.setItem('pokerPlayers', JSON.stringify(players));
+        }
+
+        // Funzione per calcolare la divisione delle vincite nel primo tab
         function calculateSplit() {
             const total = parseInt(document.getElementById('totalWinnings').value);
-            const result = winningsData.find(w => w.total === total);
+            
+            if (isNaN(total) || total <= 0) {
+                showPopup('Errore', 'Inserisci un importo valido.');
+                return;
+            }
+
+            const result = splitRules.find(r => r.total === total);
 
             if (result) {
-                let content = `<p><strong>Primo:</strong> ${result.first}</p>
-                               <p><strong>Secondo:</strong> ${result.second}</p>`;
+                let content = `<p><strong>Primo:</strong> €${result.first}</p>
+                               <p><strong>Secondo:</strong> €${result.second}</p>`;
                 if (result.third) {
-                    content += `<p><strong>Terzo:</strong> ${result.third}</p>`;
+                    content += `<p><strong>Terzo:</strong> €${result.third}</p>`;
                 }
                 showPopup('Divisione Calcolata', content);
+                addToHistory(total, result);
+                updateChart(result);
             } else {
                 showPopup('Attenzione', '<p>Gabriele è ludopatico</p>');
             }
         }
 
-        function showPopup(title, content) {
-            const popup = document.getElementById('popup');
-            const popupTitle = document.getElementById('popupTitle');
-            const popupContent = document.getElementById('popupContent');
-            
-            popupTitle.textContent = title;
-            popupContent.innerHTML = content;
-            
-            popup.classList.add('show');
+        function addToHistory(total, result) {
+            history.push({ total, first: result.first, second: result.second, third: result.third || 0 });
+            updateHistoryList();
+        }
+
+      function updateHistoryList() {
+    const historyList = document.getElementById('historyList');
+    historyList.innerHTML = '';
+
+    history.forEach((item, index) => {
+        let listItem = `<strong>Divisione ${index + 1}:</strong> Totale: €${item.total}, 
+                        Primo: €${item.first}, Secondo: €${item.second}`;
+        if (item.third) {
+            listItem += `, Terzo: €${item.third}`;
+        }
+        const listItemElement = document.createElement('li');
+        listItemElement.className = 'list-group-item bg-dark text-light';
+        listItemElement.innerHTML = listItem;
+        historyList.appendChild(listItemElement);
+    });
+}
+
+        function updateChart(result) {
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            if (pieChart) {
+                pieChart.destroy();
+            }
+
+            const data = [result.first, result.second];
+            if (result.third) {
+                data.push(result.third);
+            }
+
+            pieChart = new Chart(ctx, {type: 'pie',
+                data: {
+                    labels: ['Primo', 'Secondo', result.third ? 'Terzo' : ''],
+                    datasets: [{
+                        data,
+                        backgroundColor: ['#ffd700', '#ffed4a', '#c0c0c0']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                }
+            });
+        }
+
+        function addPlayer() {
+            const name = document.getElementById('playerName').value;
+            const winnings = parseInt(document.getElementById('playerWinnings').value);
+
+            if (!name || isNaN(winnings) || winnings <= 0) {
+                showPopup('Errore', 'Inserisci un nome e una vincita validi.');
+                return;
+            }
+
+            const existingPlayer = players.find(p => p.name === name);
+            if (existingPlayer) {
+                existingPlayer.history.push({date: new Date().toISOString(), winnings});
+            } else {
+                players.push({
+                    name,
+                    history: [{date: new Date().toISOString(), winnings}]
+                });
+            }
+
+            savePlayers();
+            updatePlayersList();
+            updateLineChart();
+            updateTimeSeriesChart();
+            document.getElementById('playerName').value = '';
+            document.getElementById('playerWinnings').value = '';
+        }
+
+        function updatePlayersList() {
+            const playersList = document.getElementById('playersList');
+            playersList.innerHTML = '';
+
+            players.forEach((player, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item bg-dark text-light player-item';
+                const latestWinnings = player.history[player.history.length - 1].winnings;
+                listItem.innerHTML = `
+                    <span><strong>${player.name}:</strong> €${latestWinnings}</span>
+                    <div class="player-actions">
+                        <button onclick="editPlayer(${index})" class="btn btn-sm btn-warning">Modifica</button>
+                        <button onclick="deletePlayer(${index})" class="btn btn-sm btn-danger">Elimina</button>
+                    </div>
+                `;
+                playersList.appendChild(listItem);
+            });
+        }
+
+        function editPlayer(index) {
+            const player = players[index];
+            const newName = prompt("Inserisci il nuovo nome del giocatore:", player.name);
+            const newWinnings = prompt("Inserisci le nuove vincite del giocatore:", player.history[player.history.length - 1].winnings);
+
+            if (newName && !isNaN(newWinnings) && newWinnings > 0) {
+                player.name = newName;
+                player.history.push({date: new Date().toISOString(), winnings: parseInt(newWinnings)});
+                savePlayers();
+                updatePlayersList();
+                updateLineChart();
+                updateTimeSeriesChart();
+            } else {
+                showPopup('Errore', 'Inserisci dati validi.');
+            }
+        }
+
+        function deletePlayer(index) {
+            if (confirm("Sei sicuro di voler eliminare questo giocatore?")) {
+                players.splice(index, 1);
+                savePlayers();
+                updatePlayersList();
+                updateLineChart();
+                updateTimeSeriesChart();
+            }
+        }
+
+        function updateLineChart() {
+            const ctx = document.getElementById('lineChart').getContext('2d');
+            if (lineChart) {
+                lineChart.destroy();
+            }
+
+            const labels = players.map(player => player.name);
+            const data = players.map(player => player.history[player.history.length - 1].winnings);
+
+            lineChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Vincite',
+                        data,
+                        backgroundColor: '#ffd700',
+                        borderColor: '#ffed4a',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTimeSeriesChart() {
+            const ctx = document.getElementById('timeSeriesChart').getContext('2d');
+            if (timeSeriesChart) {
+                timeSeriesChart.destroy();
+            }
+
+            const datasets = players.map(player => ({
+                label: player.name,
+                data: player.history.map(h => ({x: new Date(h.date), y: h.winnings})),
+                fill: false,
+                borderColor: getRandomColor(),
+                tension: 0.1
+            }));
+
+            timeSeriesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(players);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const exportFileDefaultName = 'poker_winnings_data.json';
+
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(18);
+            doc.text("Poker Winnings Report", 20, 20);
+
+            doc.setFontSize(12);
+            let yPos = 40;
+
+            players.forEach((player, index) => {
+                doc.text(`${index + 1}. ${player.name}`, 20, yPos);
+                yPos += 10;
+
+                player.history.forEach((entry, i) => {
+                    const date = new Date(entry.date).toLocaleDateString();
+                    doc.text(`   ${date}: €${entry.winnings}`, 30, yPos);
+                    yPos += 7;
+                });
+
+                yPos += 10;
+            });
+
+            doc.save("poker_winnings_report.pdf");
+        }
+
+        function importData() {
+            document.getElementById('importFile').click();
+        }
+
+        document.getElementById('importFile').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    players = importedData;
+                    savePlayers();
+                    updatePlayersList();
+                    updateLineChart();
+                    updateTimeSeriesChart();
+                    showPopup('Successo', 'Dati importati correttamente.');
+                } catch (error) {
+                    showPopup('Errore', 'Errore durante l\'importazione dei dati.');
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        function showPopup(title, message) {
+            const popup = document.createElement('div');
+            popup.classList.add('popup');
+            popup.innerHTML = `<h2>${title}</h2>${message}`;
+            document.body.appendChild(popup);
+
+            setTimeout(() => {
+                popup.classList.add('show');
+            }, 100);
+
             setTimeout(() => {
                 popup.classList.remove('show');
-            }, 5000);
+                setTimeout(() => {
+                    document.body.removeChild(popup);
+                }, 300);
+            }, 3000);
         }
     </script>
 </body>
